@@ -1,8 +1,7 @@
 from handlers.handler_interface import HandlerInterface
 from usecases.equation_usecase import EquationUseCase
-from models.equation_request import EquationRequest
-from models.equation_data_response import EquationDataResponse
-from models.equation_response import EquationResponse
+from models.server_equation_request import ServerEquationRequest
+from models.server_equation_response import ServerEquationResponse
 from settings import settings
 
 class EquationHandler(HandlerInterface):
@@ -21,19 +20,19 @@ class EquationHandler(HandlerInterface):
         return b
     '''
 
-    def execute(self, dataReq: EquationRequest):
+    def execute(self, dataReq: ServerEquationRequest) -> ServerEquationResponse:
         print(f"Handling data: {dataReq}")
 
-        dataResp: EquationDataResponse = EquationUseCase().equation(dataReq.question)
+        uResp = EquationUseCase().equation(dataReq.question)
 
-        resp = EquationResponse(
+        resp = ServerEquationResponse(
             status = "success",
-            data = dataResp
+            data = uResp
         )
 
-        if dataResp.error is not None:
+        if uResp.error is not None:
             resp.status = "error"
-            resp.message = dataResp.error
+            resp.message = uResp.error
             resp.data = None
 
 

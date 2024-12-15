@@ -1,12 +1,12 @@
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse
 from handlers.equation_handler import EquationHandler
-from models.equation_request import EquationRequest
+from models.server_equation_request import ServerEquationRequest
 router_e = APIRouter()
 
 # Обработчик для обработки вопросов
 @router_e.post("/equation/")
-async def solve_equation(dataReq: EquationRequest):
+async def solve_equation(dataReq: ServerEquationRequest):
     try:
         resp = EquationHandler().execute(dataReq)
         if resp.status == "success":

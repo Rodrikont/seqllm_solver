@@ -1,6 +1,7 @@
-from pydantic import BaseModel
 from typing import Optional
+from dataclasses import dataclass
 
-class EquationDataResponse(BaseModel):
+@dataclass
+class UsecaseEquationResponse:
     answer: str
     error: Optional[str] = None
