@@ -51,12 +51,14 @@ class WolframClient:
                                              var += "; "
                                         var += subpod.get('plaintext')
                                         # Debug
-                                        print(var) 
+                                        print(var)
+            else:
+                 return ClientEquationResponse(error="Модель не отвечает")
             answer = var
         except requests.exceptions.RequestException as e:
-            return ClientEquationResponse(error=f"Request failed: {e}")
+            return ClientEquationResponse(error=f"Ошибка запроса: {e}")
         except ValueError:
-            return ClientEquationResponse(error="Failed to parse JSON response.")
+            return ClientEquationResponse(error="Не удалось преобразовать ответ")
 
         cResp = ClientEquationResponse(answer=answer)
 

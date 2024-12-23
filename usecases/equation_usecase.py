@@ -21,7 +21,7 @@ class EquationUseCase:
         else:
             resp = UsecaseEquationResponse(
                 answer = "error",
-                error = 'Not Equation'
+                error = 'Error while Qwen check'
                 )
 
         return resp
