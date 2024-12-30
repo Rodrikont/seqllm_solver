@@ -52,4 +52,5 @@ class EquationUseCase:
     def send_wolfam(self, question: str) -> ClientEquationResponse:
         req = ClientEquationRequest(question=question)
         resp = llm_clients.NewLlmClient(llm_clients.LlmClientsType.WOLFRAM).ask_question(req)
+        print(resp)
         return resp
