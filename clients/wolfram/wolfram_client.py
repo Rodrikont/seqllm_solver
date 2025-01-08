@@ -33,8 +33,10 @@ class WolframClient:
                 except ValueError as e:                    
                     print(f"Ошибка разбора JSON: {e}")
                 except Exception as e:
+                    print(e)
                     return ClientEquationResponse(error=f"Ошибка преобразования ответа: {e}")
             else:
+                print(f"Ошибка запроса: {response.status_code}")
                 return ClientEquationResponse(error=f"Ошибка запроса: {response.status_code}")
 
             # print(response_data) # uravnenie nado bylo
@@ -53,11 +55,14 @@ class WolframClient:
                                         # Debug
                                         print(var)
             else:
+                 print("Модель не отвечает")
                  return ClientEquationResponse(error="Модель не отвечает")
             answer = var
         except requests.exceptions.RequestException as e:
+            print(e)
             return ClientEquationResponse(error=f"Ошибка запроса: {e}")
         except ValueError:
+            print(e)
             return ClientEquationResponse(error="Не удалось преобразовать ответ")
 
         cResp = ClientEquationResponse(answer=answer)

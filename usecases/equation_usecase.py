@@ -19,6 +19,7 @@ class EquationUseCase:
                 error=cResp.error
             )
         else:
+            print("error while Qwen check")
             resp = UsecaseEquationResponse(
                 answer = "error",
                 error = 'Error while Qwen check'

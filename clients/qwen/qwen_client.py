@@ -34,6 +34,7 @@ class QwenClient:
                 result[-2][0][-1],
             )
         except Exception as e:
+            print(e)
             return ClientEquationResponse(error=f"Ошибка: {e}")
 
         return resp

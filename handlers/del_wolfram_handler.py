@@ -37,6 +37,7 @@ class WolframHandler(HandlerInterface):
             return simplified_expr
 
         except Exception as e:
+            print(e)
             return f"Ошибка обработки выражения: {e}"
 
     def execute(data):
