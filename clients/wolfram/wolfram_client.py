@@ -3,6 +3,7 @@ from models.client_equation_request import ClientEquationRequest
 from models.client_equation_response import ClientEquationResponse
 from clients.wolfram.dto.wolfram_request_dto import WolframRequestDto
 from clients.wolfram.dto.wolfram_response_dto import WolframResponseDto
+from config.config import config
 from settings import settings
 import requests
 
@@ -11,14 +12,14 @@ class WolframClient:
         try:
             req = WolframRequestDto(
                  input = data.question,
-                 format = 'plaintext',
-                 output = 'JSON',
-                 appid = 'VTPUR2-T2TER673J7'
+                 format = "plaintext",
+                 output = "JSON",
+                 appid = config.client_wolfram.appid
             )
 
             dReq = req.dict()
 
-            response = requests.post(settings.WOLFRAM_URL, data=dReq)
+            response = requests.post(config.client_wolfram.url, data=dReq)
             #response.raise_for_status()
 
             if response.status_code == 200:
@@ -46,14 +47,14 @@ class WolframClient:
                         if qResult is not None :
                             pods = qResult.get("pods")
                             for pod in pods:
-                                # if pod.get('title') == "Solution" or pod.get('title') == "Solutions":
-                                    subpods = pod.get('subpods')
+                                # if pod.get("title") == "Solution" or pod.get("title") == "Solutions":
+                                    subpods = pod.get("subpods")
                                     for subpod in subpods:
-                                        if 'x' in subpod.get('plaintext'):
+                                        if "x" in subpod.get("plaintext"):
                                             if var != "":
                                                 var += ";\n"
-                                            var += subpod.get('plaintext')
-                                        if var == '':
+                                            var += subpod.get("plaintext")
+                                        if var == "":
                                             print("HOW IT WORKS?!")
                                     # Debug
                                     print(var)
@@ -77,5 +78,5 @@ class WolframClient:
 
         return cResp
     
-if __name__ == '__main__':
-    print(WolframClient.request(''))
+if __name__ == "__main__":
+    print(WolframClient.request(""))
