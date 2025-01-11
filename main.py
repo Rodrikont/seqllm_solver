@@ -1,7 +1,6 @@
 from fastapi import FastAPI, Depends
 from routes.equation_routes import router_e
 from config.config import config
-from usecases.equation_usecase import EquationUseCase
 
 # debug
 print(vars(config))

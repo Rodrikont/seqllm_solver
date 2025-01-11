@@ -26,14 +26,17 @@ class EquationHandler(HandlerInterface):
         uResp = EquationUseCase().equation(dataReq.question)
 
         resp = ServerEquationResponse(
-            status = "success",
+            status = 200,
             data = uResp
         )
 
         if uResp.error is not None:
-            resp.status = "error"
+            resp.status = uResp.status
             resp.message = uResp.error
-            resp.data = None
+            resp.data = uResp
+
+        else:
+            resp.message = uResp.answer
 
 
         return resp

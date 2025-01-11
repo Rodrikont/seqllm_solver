@@ -2,6 +2,6 @@ from pydantic import BaseModel
 from models.usecase_equation_response import UsecaseEquationResponse
 
 class ServerEquationResponse(BaseModel):
-    status: str
+    status: int | None = 200
     message: str = ""
     data: UsecaseEquationResponse

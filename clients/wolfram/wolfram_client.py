@@ -46,14 +46,22 @@ class WolframClient:
                         if qResult is not None :
                             pods = qResult.get("pods")
                             for pod in pods:
-                                if pod.get('title') == "Solution" or pod.get('title') == "Solutions":
+                                # if pod.get('title') == "Solution" or pod.get('title') == "Solutions":
                                     subpods = pod.get('subpods')
-                                    for subpod in subpods: 
-                                        if var != "":
-                                             var += "; "
-                                        var += subpod.get('plaintext')
-                                        # Debug
-                                        print(var)
+                                    for subpod in subpods:
+                                        if 'x' in subpod.get('plaintext'):
+                                            if var != "":
+                                                var += ";\n"
+                                            var += subpod.get('plaintext')
+                                        if var == '':
+                                            print("HOW IT WORKS?!")
+                                    # Debug
+                                    print(var)
+                                # else:
+                                #    print("No solutions\n\n")
+                                #    print(pods)
+                        else:
+                            print("Empty answer")
             else:
                  print("Модель не отвечает")
                  return ClientEquationResponse(error="Модель не отвечает")

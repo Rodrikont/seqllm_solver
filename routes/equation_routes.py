@@ -9,11 +9,11 @@ router_e = APIRouter()
 async def solve_equation(dataReq: ServerEquationRequest):
     try:
         resp = EquationHandler().execute(dataReq)
-        if resp.status == "success":
+        if resp.status == 200:
             return JSONResponse(status_code=200, content=resp.dict(exclude_none=True))
         else:
-            print("404")
+            print(404)
             return JSONResponse(status_code=404, content=resp.dict(exclude_none=True)) 
     except Exception as e:
         print(e)
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=500, detail=str(e))

@@ -16,6 +16,7 @@ class EquationUseCase:
             cResp = self.send_wolfam(equation)
             resp = UsecaseEquationResponse(
                 answer=cResp.answer,
+                status=cResp.status,
                 error=cResp.error
             )
         else:
@@ -37,11 +38,13 @@ class EquationUseCase:
             cResp = llm_clients.NewLlmClient(llm_clients.LlmClientsType.QWEN).ask_question(dataReq)
 
             answer = "True"
-            if not cResp.answer == 'Да' and i in (1, 2):
+            if not cResp.answer == 'Да' and i in (0, 1):
                 answer = "False"
-            if cResp.answer == 'Да' and i == 3:
+                break
+            if cResp.answer == 'Да' and i == 2:
                 answer = "False"
-            if cResp.answer == 'Да' and i in (4, 5, 6):
+                break
+            if cResp.answer == 'Да' and i in (3, 4, 5):
                 a = True
         if a == True:
             answer = "True"
