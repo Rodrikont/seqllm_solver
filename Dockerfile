@@ -13,7 +13,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Копируем код приложения
 COPY . .
 
-#EXPOSE 8080
+# Удаляем файл .env
+RUN rm -f .env
+
+EXPOSE 8080
 
 # Указываем команду для запуска приложения
 CMD ["python", "main.py"]

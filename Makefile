@@ -1,7 +1,7 @@
 # Makefile
 # fastHTTP server "npulse-watcher"
 
-include .env
+include .make.env
 export
 
 .DEFAULT_GOAL := help
@@ -21,19 +21,27 @@ help: ## List of commands
 server: ## Запуск fastHTTP сервера
 	@echo "***** SERVER RUN *****"
 	@set -o allexport; \
-	. ./.app.env; \
-	phyton main.py
+	. ./.env; \
+	python3 main.py
+
+server-myenv: ## Запуск fastHTTP сервера в myenv окружении
+	python3 -m venv myenv
+	source myenv/bin/activate
+	@echo "***** SERVER RUN *****"
+	@set -o allexport; \
+	. ./.env; \
+	python3 main.py
 
 img-build: ## Генерация образа docker контейнера
 	docker build -t $(APP_IMG_NAME) .
 
 img-rebuild: ## Удаление и генерация образа docker контейнера
-	docker rmi $(APP_IMG_NAME)
+	docker rmi -f $(APP_IMG_NAME)
 	docker build -t $(APP_IMG_NAME) .
 
 img-build-push: img-build img-push-local ## Сборка images, обновление в репозитарии и очистка
 #	docker rmi $$(docker images --filter "reference=${APP_IMG}" -q)
-	docker rmi $(APP_IMG_NAME)
+	docker rmi -f $(APP_IMG_NAME)
 
 img-push-local: ## Отправка images в локальный репозитарий
 	docker tag $(APP_IMG_NAME) $(APP_IMG)
@@ -45,19 +53,3 @@ img-pull-local: ## Загрузка images из локального репоз�
 
 docker-run: ## Запуск докера
 	docker run -d --name $(APP_NAME) $(APP_IMG_NAME)
-
-#secrets-create: ## Создание secrets
-#	docker secret create npulse_telegram_token ./secrets/npulse_telegram_token
-
-#secrets-rm: ## Создание secrets
-#	docker secret rm npulse_telegram_token
-
-stack-deploy: ## Развертывание контейнеров
-	@docker stack deploy -c docker-compose.yml --detach=true $(STACK_NAME)
-
-stack-rm: ## Удаление контейнеров
-	@docker stack rm $(STACK_NAME)
-
-install: stack-deploy ## Развертывание контейнеров
-
-uninstall: stack-rm ## Удаление контейнеров
