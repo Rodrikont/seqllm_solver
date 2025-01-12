@@ -53,3 +53,11 @@ img-pull-local: ## Загрузка images из локального репоз�
 
 docker-run: ## Запуск докера
 	docker run -d --name $(APP_NAME) $(APP_IMG_NAME)
+
+venv-recreate: ## Переустанвка venv
+	rm -rf solver_venv
+	python3 -m venv solver_venv
+
+venv-pip-install: ## venv-pip-install
+	pip install --upgrade pip
+	pip install --no-cache-dir -r requirements.txt
