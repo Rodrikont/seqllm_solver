@@ -26,7 +26,7 @@ class Config:
         self.client_wolfram = ConfigClientWolfram(env)
 
         self.app_name = env.str("APP_NAME", "EqSolverLLM")
-        self.app_version = env.str("APP_VERSION", "0.1")
+        self.app_version = env.str("APP_VERSION", "0.1.2")
         self.debug = env.bool("APP_DEBUG", False)
         self.host = env.str("APP_HOST", '0.0.0.0')
         self.port = env.int("APP_PORT", 8080)
