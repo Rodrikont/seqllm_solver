@@ -14,11 +14,20 @@ class EquationUseCase:
 
         if cResp.answer == "True" :
             cResp = self.send_wolfam(equation)
-            resp = UsecaseEquationResponse(
+            if cResp.sol_count == 1:
+                resp = UsecaseEquationResponse(
                 answer=cResp.answer,
                 status=cResp.status,
                 error=cResp.error
-            )
+                )
+            elif cResp.sol_count == 2:
+                resp = UsecaseEquationResponse(
+                    answer=cResp.answer,
+                    answer2=cResp.answer,
+                    sol_count=cResp.sol_count,
+                    status=cResp.status,
+                    error=cResp.error
+                )
         else:
             print("error while Qwen check")
             resp = UsecaseEquationResponse(

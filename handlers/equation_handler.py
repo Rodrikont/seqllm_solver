@@ -32,12 +32,14 @@ class EquationHandler(HandlerInterface):
 
         if uResp.error is not None:
             resp.status = uResp.status
-            resp.message = uResp.error
+            resp.message[0] = uResp.error
             resp.data = uResp
 
         else:
-            resp.message = uResp.answer
+            if uResp.sol_count == 1:
+                resp.message = uResp.answer
+            elif uResp.sol_count == 2:
+                resp.message == uResp.answer, uResp.answer2
 
-
-        return resp
+        return resp 
 

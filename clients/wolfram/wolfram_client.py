@@ -41,32 +41,33 @@ class WolframClient:
                 return ClientEquationResponse(error=f"Ошибка запроса: {response.status_code}")
 
             # print(response_data) # uravnenie nado bylo
-            var: str = ""
+            vs = ["", ""]
             if respDto is not None:
                         qResult  = respDto.queryresult
                         if qResult is not None :
                             pods = qResult.get("pods")
                             for pod in pods:
-                                # if pod.get("title") == "Solution" or pod.get("title") == "Solutions":
+                                if pod.get("title") == "Solution":
                                     subpods = pod.get("subpods")
-                                    for subpod in subpods:
-                                        if "x" in subpod.get("plaintext"):
-                                            if var != "":
-                                                var += ";\n"
-                                            var += subpod.get("plaintext")
-                                        if var == "":
-                                            print("HOW IT WORKS?!")
+                                    vs[0] = subpods.get("plaintext")
                                     # Debug
-                                    print(var)
-                                # else:
-                                #    print("No solutions\n\n")
-                                #    print(pods)
+                                    print(vs)
+                                elif pod.get("title") == "Solutions":
+                                    sol_cnt = 2
+                                    subpods = pod.get("subpods")
+                                    for subpod, i in subpods, len(subpods):
+                                        vs[i] = subpod.get("plaintext")
+                                    #Debug
+                                    print(vs)
+                                else:
+                                   print("No solutions\n\n")
+                                   print(pods)
                         else:
                             print("Empty answer")
             else:
                  print("Модель не отвечает")
                  return ClientEquationResponse(error="Модель не отвечает")
-            answer = var
+            answer = vs[0]
         except requests.exceptions.RequestException as e:
             print(e)
             return ClientEquationResponse(error=f"Ошибка запроса: {e}")
@@ -74,7 +75,10 @@ class WolframClient:
             print(e)
             return ClientEquationResponse(error="Не удалось преобразовать ответ")
 
-        cResp = ClientEquationResponse(answer=answer)
+        if sol_cnt == 2:
+            cResp = ClientEquationResponse(answer=answer, answer2=vs[1], sol_count=sol_cnt)
+        elif sol_cnt == 1:
+            cResp = ClientEquationResponse(answer=answer)
 
         return cResp
     
