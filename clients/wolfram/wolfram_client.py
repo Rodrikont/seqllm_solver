@@ -19,6 +19,9 @@ class WolframClient:
 
             dReq = req.dict()
 
+            print("REQUEST")
+            print(dReq)
+
             response = requests.post(config.client_wolfram.url, data=dReq)
             #response.raise_for_status()
 
@@ -28,7 +31,9 @@ class WolframClient:
                     # Проверка статуса запроса
                     response.raise_for_status()
                     # Получаем JSON из ответа
-                    jsonResp = response.json() 
+                    jsonResp = response.json()
+                    print("RESPONSE")
+                    print(jsonResp)
                     # Преобразуем в структуру
                     respDto = WolframResponseDto.parse_obj(jsonResp) 
                 except ValueError as e:                    
@@ -48,20 +53,22 @@ class WolframClient:
                             pods = qResult.get("pods")
                             for pod in pods:
                                 if pod.get("title") == "Solution":
+                                    sol_cnt = 1
                                     subpods = pod.get("subpods")
-                                    vs[0] = subpods.get("plaintext")
+                                    vs[0] = subpods[0].get("plaintext")
                                     # Debug
                                     print(vs)
                                 elif pod.get("title") == "Solutions":
                                     sol_cnt = 2
                                     subpods = pod.get("subpods")
-                                    for subpod, i in subpods, len(subpods):
-                                        vs[i] = subpod.get("plaintext")
+                                    vs = []
+                                    for subpod in subpods:
+                                        vs.append(subpod.get("plaintext"))
                                     #Debug
                                     print(vs)
                                 else:
-                                   print("No solutions\n\n")
-                                   print(pods)
+                                    print("No solutions\n\n")
+                                    print(pods)
                         else:
                             print("Empty answer")
             else:

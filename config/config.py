@@ -1,4 +1,5 @@
 from environs import Env
+import os
 
 class ConfigClientQwen:
      def __init__(self, env: Env):
@@ -13,9 +14,19 @@ class ConfigClientQwen:
         self.qs = [self.q1, self.q2, self.q3, self.q4, self.q5, self.q6]
 
 class ConfigClientWolfram:
-     def __init__(self, env: Env):
+    def __init__(self, env: Env):
         self.url = env.str("CLIENT_WOLFRAM_URL", "http://api.wolframalpha.com/v2/query")
-        self.appid = env.str("CLIENT_WOLFRAM_APPID", "VTPUR2-T2TER673J7")
+        self.appid = env.str("CLIENT_WOLFRAM_APPID", "")
+        self.appid_file = env.str("CLIENT_WOLFRAM_APPID_FILE", "/run/secrets/seqllm_wolfram_appid")
+    def init_token(self):
+        if self.appid == "":
+            # Проверка на существование файла
+            if os.path.exists(self.appid_file):
+                # Открытие файла и чтение содержимого
+                with open(self.appid_file, "r", encoding="utf-8") as file:
+                    self.token = file.read()
+            else:
+                print(f"Файл {self.appid_file} не существует.")
 
 class Config:
     def __init__(self):

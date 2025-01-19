@@ -26,20 +26,19 @@ class EquationHandler(HandlerInterface):
         uResp = EquationUseCase().equation(dataReq.question)
 
         resp = ServerEquationResponse(
-            status = 200,
-            data = uResp
+            status=200,
+            data=uResp
         )
 
         if uResp.error is not None:
-            resp.status = uResp.status
-            resp.message[0] = uResp.error
-            resp.data = uResp
+            resp.status=uResp.status
+            resp.message[0]=uResp.error
+            resp.data=uResp
 
         else:
-            if uResp.sol_count == 1:
-                resp.message = uResp.answer
-            elif uResp.sol_count == 2:
-                resp.message == uResp.answer, uResp.answer2
+            resp.message[0]=uResp.answer
+            resp.message[1]=uResp.answer2
 
+        print(resp)
         return resp 
 

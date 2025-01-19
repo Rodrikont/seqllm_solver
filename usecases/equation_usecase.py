@@ -23,7 +23,7 @@ class EquationUseCase:
             elif cResp.sol_count == 2:
                 resp = UsecaseEquationResponse(
                     answer=cResp.answer,
-                    answer2=cResp.answer,
+                    answer2=cResp.answer2,
                     sol_count=cResp.sol_count,
                     status=cResp.status,
                     error=cResp.error

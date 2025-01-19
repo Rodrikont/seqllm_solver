@@ -1,2 +1,6 @@
-myenv
+solver_venv
 __pycache__
+
+secrets
+
+.env
