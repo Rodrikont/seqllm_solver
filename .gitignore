@@ -1,6 +1,4 @@
-solver_venv
+.venv
 __pycache__
-
-secrets
 
 .env
