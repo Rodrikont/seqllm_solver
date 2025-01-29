@@ -5,6 +5,7 @@ from clients.wolfram.dto.wolfram_request_dto import WolframRequestDto
 from clients.wolfram.dto.wolfram_response_dto import WolframResponseDto
 from config.config import config
 from settings import settings
+from sympy import sympify
 import requests
 
 class WolframClient:
@@ -81,11 +82,30 @@ class WolframClient:
         except ValueError:
             print(e)
             return ClientEquationResponse(error="Не удалось преобразовать ответ")
-
+        '''
         if sol_cnt == 2:
             cResp = ClientEquationResponse(answer=answer, answer2=vs[1], sol_count=sol_cnt)
         elif sol_cnt == 1:
             cResp = ClientEquationResponse(answer=answer)
+        '''
+        if sol_cnt == 2:
+            x = sympify(answer)
+            y = sympify(vs[1])
+            if x != x.evalf() and y == y.evalf():
+                if x == x.evalf():
+                    cResp = ClientEquationResponse(answer=answer, sol_count=sol_cnt)
+                    cResp.answer2 = f"Точно: {y}\nПримерно: {y.evalf()}"
+                if y == y.evalf():
+                    cResp = ClientEquationResponse(answer=f"Точно: {x}\nПримерно: {x.evalf()}", sol_count=sol_cnt)
+                    cResp.answer2 = vs[1]
+            else:
+                cResp = ClientEquationResponse(answer=answer, answer2=vs[1], sol_count=sol_cnt)
+        elif sol_cnt == 1:
+            x = sympify(answer)
+            if x == x.evalf():
+                cResp = ClientEquationResponse(answer=f"Точно: {x}\nПримерно: {x.evalf()}")
+            else:
+                cResp = ClientEquationResponse(answer=answer)
 
         return cResp
     
