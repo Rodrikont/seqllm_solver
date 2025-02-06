@@ -12,10 +12,10 @@ class WolframClient:
     def ask_question(self, data: ClientEquationRequest) -> ClientEquationResponse:
         try:
             req = WolframRequestDto(
-                 input = data.question,
-                 format = "plaintext",
-                 output = "JSON",
-                 appid = config.client_wolfram.appid
+                input = data.question,
+                format = "plaintext",
+                output = "JSON",
+                appid = config.client_wolfram.appid
             )
 
             dReq = req.dict()

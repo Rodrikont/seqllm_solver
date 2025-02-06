@@ -2,9 +2,14 @@ from fastapi import FastAPI, Depends
 from routes.equation_routes import router_e
 from config.config import config
 
+config.client_wolfram.init_token()
+
 # debug
 print(vars(config))
+print()
 print(vars(config.client_qwen))
+print()
+print(vars(config.client_wolfram))
 
 app = FastAPI()
 

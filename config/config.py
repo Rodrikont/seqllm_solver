@@ -18,6 +18,7 @@ class ConfigClientWolfram:
         self.url = env.str("CLIENT_WOLFRAM_URL", "http://api.wolframalpha.com/v2/query")
         self.appid = env.str("CLIENT_WOLFRAM_APPID", "")
         self.appid_file = env.str("CLIENT_WOLFRAM_APPID_FILE", "/run/secrets/seqllm_wolfram_appid")
+        self.token = ""
     def init_token(self):
         if self.appid == "":
             # Проверка на существование файла
@@ -25,6 +26,8 @@ class ConfigClientWolfram:
                 # Открытие файла и чтение содержимого
                 with open(self.appid_file, "r", encoding="utf-8") as file:
                     self.token = file.read()
+                self.appid = self.token
+                print(self.appid)
             else:
                 print(f"Файл {self.appid_file} не существует.")
 
