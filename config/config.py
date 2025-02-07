@@ -27,7 +27,7 @@ class ConfigClientWolfram:
                 with open(self.appid_file, "r", encoding="utf-8") as file:
                     self.token = file.read()
                 self.appid = self.token
-                print(self.appid)
+                print("Token created")
             else:
                 print(f"Файл {self.appid_file} не существует.")
 

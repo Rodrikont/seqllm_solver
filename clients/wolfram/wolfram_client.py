@@ -133,7 +133,7 @@ from clients.wolfram.dto.wolfram_request_dto import WolframRequestDto
 from clients.wolfram.dto.wolfram_response_dto import WolframResponseDto
 from config.config import config
 from settings import settings
-from sympy import sympify, SympifyError
+from sympy import I, sympify, SympifyError
 import requests
 
 class WolframClient:
@@ -221,17 +221,19 @@ class WolframClient:
 
             answer = vs[0]
 
+            if "i" in vs[0] or "i" in vs[1]:
+                return ClientEquationResponse(answer="Дискриминант отрицательный. Нет действительных корней.")
+
+            try:
+                answer = answer[4:]
+            except:
+                pass                
+
             if sol_cnt == 2:
                 print()
                 print("Ответа два")
                 print()
                 try:
-                    for i in range(len(answer)):
-                        if answer[i] == " ":
-                            answer == answer - answer[i]
-                    for i in range(len(vs[1])):
-                        if vs[1][i] == " ":
-                            vs[1] == vs[1] - vs[1][i]
                     x = sympify(answer)
                     y = sympify(vs[1])
                 except SympifyError as e:
@@ -250,7 +252,7 @@ class WolframClient:
                             cResp = ClientEquationResponse(answer=f"Точно: {x}\nПримерно: {x.evalf()}", sol_count=sol_cnt)
                             cResp.answer2 = vs[1]
                     else:
-                        cResp = ClientEquationResponse(answer=answer, answer2=vs[1], sol_count=sol_cnt)
+                        cResp = ClientEquationResponse(answer=f"x = {answer}", answer2=f"x = {vs[1]}", sol_count=sol_cnt)
                 except Exception as e:
                     print(f"Ошибка при обработке ответа: {e}")
                     return ClientEquationResponse(error=f"Ошибка при обработке ответа: {e}")
@@ -260,22 +262,21 @@ class WolframClient:
                 print("Ответ один")
                 print()
                 try:
-                    for i in range(len(answer)):
-                        if answer[i] == " ":
-                            answer == answer - answer[i]
                     x = sympify(answer)
+                    print("Преобразованное выражение:", x)
+                    print("Численное значение:", x.evalf())
                 except SympifyError as e:
                     print(f"Ошибка преобразования выражения: {e}")
                     return ClientEquationResponse(error=f"Ошибка преобразования выражения: {e}")
                 print()
-                print("Не преобразовал")
+                print("Преобразовал")
                 print()
 
                 try:
                     if x == x.evalf():
                         cResp = ClientEquationResponse(answer=f"Точно: {x}\nПримерно: {x.evalf()}")
                     else:
-                        cResp = ClientEquationResponse(answer=answer)
+                        cResp = ClientEquationResponse(answer=f"x = {answer}")
                 except Exception as e:
                     print(f"Ошибка при обработке ответа: {e}")
                     return ClientEquationResponse(error=f"Ошибка при обработке ответа: {e}")

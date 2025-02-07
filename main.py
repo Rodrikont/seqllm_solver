@@ -5,12 +5,12 @@ from config.config import config
 config.client_wolfram.init_token()
 
 # debug
-print(vars(config))
+'''print(vars(config))
 print()
 print(vars(config.client_qwen))
 print()
 print(vars(config.client_wolfram))
-
+'''
 app = FastAPI()
 
 # Подключаем маршруты
@@ -20,4 +20,3 @@ app.include_router(router_e)
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host=config.host, port=config.port)
-    
