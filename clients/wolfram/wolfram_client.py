@@ -238,7 +238,7 @@ class WolframClient:
                     y = sympify(vs[1])
                 except SympifyError as e:
                     print(f"Ошибка преобразования выражения: {e}")
-                    return ClientEquationResponse(error=f"Ошибка преобразования выражения: {e}")
+                    return ClientEquationResponse(answer=f"x = {answer}", answer2=f"x = {vs[1]}", error=f"Ошибка преобразования выражения: {e}")
                 print()
                 print("Преобразовал")
                 print()
@@ -255,7 +255,7 @@ class WolframClient:
                         cResp = ClientEquationResponse(answer=f"x = {answer}", answer2=f"x = {vs[1]}", sol_count=sol_cnt)
                 except Exception as e:
                     print(f"Ошибка при обработке ответа: {e}")
-                    return ClientEquationResponse(answer=f"x = {answer}", answer2=f"x = {vs[1]}", error=f"Ошибка при обработке ответа: {e}")
+                    return ClientEquationResponse(error=f"Ошибка при обработке ответа: {e}")
 
             elif sol_cnt == 1:
                 print()
