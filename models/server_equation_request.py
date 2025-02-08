@@ -5,4 +5,3 @@ from dataclasses import dataclass
 @dataclass
 class ServerEquationRequest(BaseModel):
     question: str
-    status: Optional[int] = 200

@@ -4,6 +4,7 @@ from models.client_equation_request import ClientEquationRequest
 from models.client_equation_response import ClientEquationResponse
 from clients.qwen.dto.qwen_request_dto import QwenRequestDto
 from clients.qwen.dto.qwen_response_dto import QwenResponseDto
+from enums.status_enums import Status
 
 client = Client("Qwen/Qwen2.5-72B-Instruct")
 
@@ -28,13 +29,18 @@ class QwenClient:
 
             # resp = QwenResponseDto(**result)
 
-            print(f"{result[-2][0][-1]} - {data.question}") # log
+            print(f"{data.question}") # log
+            print(f"Ответ: {result[-2][0][-1]}") # log
+            print()
 
             resp = ClientEquationResponse(
-                result[-2][0][-1],
+                answer=result[-2][0][-1],
             )
         except Exception as e:
             print(e)
-            return ClientEquationResponse(error=f"Ошибка: {e}")
+            return ClientEquationResponse(
+                status=Status.ERROR.value,
+                error=f"Ошибка: {e}",
+            )
 
         return resp

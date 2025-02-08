@@ -4,6 +4,7 @@ from models.usecase_equation_response import UsecaseEquationResponse
 from models.client_equation_request import ClientEquationRequest
 from models.client_equation_response import ClientEquationResponse
 from settings import settings
+from enums.status_enums import Status
 
 class EquationUseCase:
     def __init__(self):
@@ -14,48 +15,51 @@ class EquationUseCase:
 
         if cResp.answer == "True" :
             cResp = self.send_wolfam(equation)
-            if cResp.sol_count == 1:
-                resp = UsecaseEquationResponse(
+            resp = UsecaseEquationResponse(
                 answer=cResp.answer,
+                roots=cResp.roots,
+                aproxRoots=cResp.aproxRoots,
                 status=cResp.status,
                 error=cResp.error
-                )
-            elif cResp.sol_count == 2:
-                resp = UsecaseEquationResponse(
-                    answer=cResp.answer,
-                    answer2=cResp.answer2,
-                    sol_count=cResp.sol_count,
-                    status=cResp.status,
-                    error=cResp.error
-                )
+            )
         else:
             print("error while Qwen check")
             resp = UsecaseEquationResponse(
-                answer = "error",
-                error = 'Error while Qwen check'
+                status=Status.ERROR.value,
+                error='Error while Qwen check'
                 )
 
         return resp
 
     def send_qwen(self, equation: str) -> UsecaseEquationResponse:
-        a = False
-        for i in range(self.config.client_qwen.cycle_count):
+        isRight = True
+
+        for q in settings.REQUESTS_REQUIRED_TO_QWEN:
             dataReq = ClientEquationRequest(
-                question=f"{equation}\n{settings.REQUESTS_TO_QWEN[i]}",
+                question=f"{equation}{q}",
                 )
 
             cResp = llm_clients.NewLlmClient(llm_clients.LlmClientsType.QWEN).ask_question(dataReq)
 
-            answer = "True"
-            if not cResp.answer == 'Да' and i in (0, 1):
-                answer = "False"
+            if cResp.answer == 'Нет':
+                isRight = False
                 break
-            if cResp.answer == 'Да' and i == 2:
-                answer = "False"
-                break
-            if cResp.answer == 'Да' and i in (3, 4, 5):
-                a = True
-        if a == True:
+
+        if isRight == True:
+            isRight = False
+            for q in settings.REQUESTS_CONSISTENT_TO_QWEN:
+                dataReq = ClientEquationRequest(
+                    question=f"{equation}{q}",
+                    )
+
+                cResp = llm_clients.NewLlmClient(llm_clients.LlmClientsType.QWEN).ask_question(dataReq)
+
+                if cResp.answer == 'Да':
+                    isRight = True
+                    break
+
+        answer = "False"
+        if isRight == True:
             answer = "True"
         
         resp = UsecaseEquationResponse(answer=answer)

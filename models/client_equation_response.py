@@ -1,10 +1,11 @@
 from typing import Optional
-from dataclasses import dataclass
+from enums.status_enums import Status
+from dataclasses import dataclass, field
 
 @dataclass
 class ClientEquationResponse:
+    status: str | None = Status.NONE.value
+    roots: list = field(default_factory=list)
+    aproxRoots: list = field(default_factory=list)
     answer: Optional[str] = None
-    answer2: Optional[str] = None
-    sol_count: int | None = 1
-    status: int | None = 200
     error: Optional[str] = None

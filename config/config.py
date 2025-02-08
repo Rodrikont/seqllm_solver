@@ -4,7 +4,7 @@ import os
 class ConfigClientQwen:
      def __init__(self, env: Env):
         # self.host = env.str("CLIENT_QWEN_HOST", "")
-        self.cycle_count = env.int("CLIENT_QWEN_CYLCE_COUNT", 6)
+        #self.cycle_count = env.int("CLIENT_QWEN_CYLCE_COUNT", 6)
         self.q1 = env.str("REQUEST_1_TO_QWEN", "\nЭто уравнение? Уравнение может быть рациональным. Оно может содержать: простые значения, дробные значения, выражения. Внимательно проверь. Допустимый ответ только: Да или Нет. Комментарии не пиши.")
         self.q2 = env.str("REQUEST_2_TO_QWEN", "\nОно содержит только одну неизвестную? Допустимый ответ только: Да или Нет.")
         self.q3 = env.str("REQUEST_3_TO_QWEN", "\nВ нем есть ошибки? Допустимый ответ только: Да или Нет.")

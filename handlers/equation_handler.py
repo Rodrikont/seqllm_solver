@@ -30,15 +30,6 @@ class EquationHandler(HandlerInterface):
             data=uResp
         )
 
-        if uResp.error is not None:
-            resp.status=uResp.status
-            resp.message[0]=uResp.error
-            resp.data=uResp
-
-        else:
-            resp.message[0]=uResp.answer
-            resp.message[1]=uResp.answer2
-
         print(resp)
         return resp 
 

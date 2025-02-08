@@ -1,10 +1,11 @@
-from typing import Optional
-from dataclasses import dataclass
+from typing import Optional, Dict, Any
+from enums.status_enums import Status
+from dataclasses import dataclass, field, asdict
 
 @dataclass
 class UsecaseEquationResponse:
-    answer: str
-    answer2: str | None = None
-    sol_count: int | None = 1
-    status: int | None = 200
+    status: str | None = Status.NONE.value
+    roots: list = field(default_factory=list)
+    aproxRoots: list = field(default_factory=list)
+    answer: Optional[str] = None
     error: Optional[str] = None

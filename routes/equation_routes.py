@@ -10,10 +10,10 @@ async def solve_equation(dataReq: ServerEquationRequest):
     try:
         resp = EquationHandler().execute(dataReq)
         if resp.status == 200:
-            return JSONResponse(status_code=200, content=resp.dict())
+            return JSONResponse(status_code=200, content=resp.model_dump(exclude_none=True))
         else:
             print(404)
-            return JSONResponse(status_code=404, content=resp.dict()) 
+            return JSONResponse(status_code=404, content=resp.model_dump(exclude_none=True)) 
     except Exception as e:
         print(e)
         raise HTTPException(status_code=500, detail=str(e))
