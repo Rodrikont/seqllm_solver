@@ -4,11 +4,20 @@
 include .make.env
 export
 
-APP_VERSION_START := "0.0.0"
-APP_VERSION := $(shell cat VERSION)
-APP_VERSION_NEW := $(shell echo $(APP_VERSION) | awk -F. '{print $$1"."$$2"."$$3+1}')
-APP_IMG_VERSION := $(APP_IMG):$(APP_VERSION)
-APP_IMG_VERSION_NEW := $(APP_IMG):$(APP_VERSION_NEW)
+VERSION_APP_FILE := "VERSION"
+VERSION_IMG_FILE := "VERSION_IMG"
+
+VERSION_APP_START := "0.1.0"
+VERSION_IMG_START := "0.1.0"
+
+VERSION_IMG := $(shell cat $(VERSION_IMG_FILE))
+VERSION_IMG_NEW := $(shell echo $(VERSION_IMG) | awk -F. '{print $$1"."$$2"."$$3+1}')
+
+VERSION_APP := $(shell cat $(VERSION_APP_FILE))
+VERSION_APP_NEW := $(shell echo $(VERSION_APP) | awk -F. '{print $$1"."$$2"."$$3+1}')
+
+APP_IMG_VERSION := $(APP_IMG):$(VERSION_IMG)
+APP_IMG_VERSION_NEW := $(APP_IMG):$(VERSION_IMG_NEW)
 
 .DEFAULT_GOAL := help
 
@@ -56,13 +65,22 @@ img-push-local: ## Отправка images в локальный репозит�
 	docker tag $(APP_IMG_NAME) $(APP_IMG_VERSION_NEW)
 	docker push $(APP_IMG_VERSION_NEW)
 	docker rmi $(APP_IMG_VERSION_NEW)
-	@$(MAKE) -s version-inc
+	@$(MAKE) -s version-img-inc
 
 img-pull-local: ## Загрузка images из локального репозитария
 	@docker pull $(APP_IMG_LATEST)
 
 docker-run: ## Запуск докера
 	docker run -d --name $(APP_NAME) $(APP_IMG_NAME_LATEST)
+
+git-push-tag-version: ## Создание тега в git для актуальной версии
+	-git tag v$(VERSION_APP)
+	git push --tags
+
+git-push-tag-version-inc: ## Увеличение версии и создание для него тега в git
+	@$(MAKE) -s version-app-inc
+	-git tag v$(VERSION_APP_NEW)
+	git push --tags
 
 venv-recreate: ## Переустанвка venv
 	rm -rf .venv
@@ -72,11 +90,17 @@ venv-pip-install: ## venv-pip-install
 	pip install --upgrade pip
 	pip install --no-cache-dir -r requirements.txt
 
-version-create: ## Создание файла с номер версии
-	echo $(APP_VERSION_START) > VERSION
+version-img-create: ## Создание файла с номер версии images
+	echo $(VERSION_IMG_START) > $(VERSION_IMG_FILE)
 
-version-inc: ## Увеличение номера версии и сохранение в файл
-	echo $(APP_VERSION_NEW) > VERSION
+version-app-create: ## Создание файла с номер версии программы
+	echo $(VERSION_APP_START) > $(VERSION_APP_FILE)
 
-version-list: ## Список версий
+version-img-inc: ## Увеличение номера версии images и сохранение в файл
+	echo $(VERSION_IMG_NEW) > $(VERSION_IMG_FILE)
+
+version-app-inc: ## Увеличение номера версии программы и сохранение в файл
+	echo $(VERSION_APP_NEW) > $(VERSION_APP_FILE)
+
+version-img-list: ## Список версий images
 	curl -s $(DOCKER_HTTP_ADRR_TAG_LIST) | jq .
