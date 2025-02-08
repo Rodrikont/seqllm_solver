@@ -33,6 +33,7 @@ class EquationUseCase:
 
     def send_qwen(self, equation: str) -> UsecaseEquationResponse:
         isRight = True
+        answer = "False"
 
         for q in settings.REQUESTS_REQUIRED_TO_QWEN:
             dataReq = ClientEquationRequest(
@@ -45,20 +46,19 @@ class EquationUseCase:
                 isRight = False
                 break
 
-        if isRight == True:
-            isRight = False
-            for q in settings.REQUESTS_CONSISTENT_TO_QWEN:
-                dataReq = ClientEquationRequest(
-                    question=f"{equation}{q}",
-                    )
+        # if isRight == True:
+        #     isRight = False
+        #     for q in settings.REQUESTS_CONSISTENT_TO_QWEN:
+        #         dataReq = ClientEquationRequest(
+        #             question=f"{equation}{q}",
+        #             )
 
-                cResp = llm_clients.NewLlmClient(llm_clients.LlmClientsType.QWEN).ask_question(dataReq)
+        #         cResp = llm_clients.NewLlmClient(llm_clients.LlmClientsType.QWEN).ask_question(dataReq)
 
-                if cResp.answer == 'Да':
-                    isRight = True
-                    break
+        #         if cResp.answer == 'Да':
+        #             isRight = True
+        #             break
 
-        answer = "False"
         if isRight == True:
             answer = "True"
         

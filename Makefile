@@ -54,20 +54,23 @@ img-rebuild: ## Удаление и генерация образа docker ко�
 	docker rmi -f $(APP_IMG_NAME)
 	docker build -t $(APP_IMG_NAME) .
 
-img-build-push-rm: img-rebuild img-push-local ## Сборка images, обновление в репозитарии и очистка
+img-rebuild-push: img-rebuild img-push ## Сборка images, обновление в репозитарии и очистка
 #	docker rmi $$(docker images --filter "reference=${APP_IMG}" -q)
-	docker rmi -f $(APP_IMG_NAME)
 
-img-push-local: ## Отправка images в локальный репозитарий
+img-rm: ## Удаление image с тегом latest
+	-docker rmi -f $(APP_IMG_NAME)
+
+img-push: ## Отправка images в локальный репозитарий с тегом latest
 	docker tag $(APP_IMG_NAME) $(APP_IMG_LATEST)
 	docker push $(APP_IMG_LATEST)
 	docker rmi $(APP_IMG_LATEST)
+
+img-push-version: ## Отправка images в локальный репозитарий с тегом актуальной версии
 	docker tag $(APP_IMG_NAME) $(APP_IMG_VERSION_NEW)
 	docker push $(APP_IMG_VERSION_NEW)
 	docker rmi $(APP_IMG_VERSION_NEW)
-	@$(MAKE) -s version-img-inc
 
-img-pull-local: ## Загрузка images из локального репозитария
+img-pull: ## Загрузка images из локального репозитария
 	@docker pull $(APP_IMG_LATEST)
 
 docker-run: ## Запуск докера
@@ -75,11 +78,6 @@ docker-run: ## Запуск докера
 
 git-push-tag-version: ## Создание тега в git для актуальной версии
 	-git tag v$(VERSION_APP)
-	git push --tags
-
-git-push-tag-version-inc: ## Увеличение версии и создание для него тега в git
-	@$(MAKE) -s version-app-inc
-	-git tag v$(VERSION_APP_NEW)
 	git push --tags
 
 venv-recreate: ## Переустанвка venv

@@ -10,7 +10,6 @@ import requests, re
 
 class WolframClient:
     def ask_question(self, data: ClientEquationRequest) -> ClientEquationResponse:
-        cResp = ClientEquationResponse(status=Status.ERROR.value, error="Неизвестная ошибка")  # Инициализация по умолчанию
         try:
             req = WolframRequestDto(
                 input=data.question,
@@ -109,8 +108,16 @@ class WolframClient:
             print("Преобразовал")
             print()
 
-            if len(aproxRoots) == len(roots):
-                status = Status.CALCULATED_APPROX.value
+            if len(roots) == 0:
+                return ClientEquationResponse(
+                    status=Status.ERROR.value,
+                    error="Нет корней",
+                )
+
+            error = None
+            if len(roots) > 2:
+                status = Status.CALCULATED_MORE_ROOTS.value
+                error = "Найдено больше 2-х корней"
 
             answer = None
             for root in roots:
@@ -123,7 +130,8 @@ class WolframClient:
                 status=status,
                 roots=roots,
                 aproxRoots=aproxRoots,
-                answer=answer
+                answer=answer,
+                error=error,
             )
 
         except requests.exceptions.RequestException as e:
