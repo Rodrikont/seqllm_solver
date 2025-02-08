@@ -4,6 +4,12 @@
 include .make.env
 export
 
+APP_VERSION_START := "0.0.0"
+APP_VERSION := $(shell cat VERSION)
+APP_VERSION_NEW := $(shell echo $(APP_VERSION) | awk -F. '{print $$1"."$$2"."$$3+1}')
+APP_IMG_VERSION := $(APP_IMG):$(APP_VERSION)
+APP_IMG_VERSION_NEW := $(APP_IMG):$(APP_VERSION_NEW)
+
 .DEFAULT_GOAL := help
 
 ################## help ##################
@@ -44,15 +50,19 @@ img-build-push: img-build img-push-local ## Сборка images, обновле�
 	docker rmi -f $(APP_IMG_NAME)
 
 img-push-local: ## Отправка images в локальный репозитарий
-	docker tag $(APP_IMG_NAME) $(APP_IMG)
-	docker push $(APP_IMG)
-	docker rmi $(APP_IMG)
+	docker tag $(APP_IMG_NAME) $(APP_IMG_LATEST)
+	docker push $(APP_IMG_LATEST)
+	docker rmi $(APP_IMG_LATEST)
+	docker tag $(APP_IMG_NAME) $(APP_IMG_VERSION_NEW)
+	docker push $(APP_IMG_VERSION_NEW)
+	docker rmi $(APP_IMG_VERSION_NEW)
+	@$(MAKE) -s version-inc
 
 img-pull-local: ## Загрузка images из локального репозитария
-	@docker pull $(APP_IMG)
+	@docker pull $(APP_IMG_LATEST)
 
 docker-run: ## Запуск докера
-	docker run -d --name $(APP_NAME) $(APP_IMG_NAME)
+	docker run -d --name $(APP_NAME) $(APP_IMG_NAME_LATEST)
 
 venv-recreate: ## Переустанвка venv
 	rm -rf .venv
@@ -61,3 +71,12 @@ venv-recreate: ## Переустанвка venv
 venv-pip-install: ## venv-pip-install
 	pip install --upgrade pip
 	pip install --no-cache-dir -r requirements.txt
+
+version-create: ## Создание файла с номер версии
+	echo $(APP_VERSION_START) > VERSION
+
+version-inc: ## Увеличение номера версии и сохранение в файл
+	echo $(APP_VERSION_NEW) > VERSION
+
+version-list: ## Список версий
+	curl -s $(DOCKER_HTTP_ADRR_TAG_LIST) | jq .
