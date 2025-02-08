@@ -5,7 +5,7 @@ from clients.wolfram.dto.wolfram_request_dto import WolframRequestDto
 from clients.wolfram.dto.wolfram_response_dto import WolframResponseDto
 from config.config import config
 from enums.status_enums import Status
-from sympy import I, sympify, SympifyError
+from sympy import I, sympify, SympifyError, Float, Integer
 import requests, re
 
 class WolframClient:
@@ -98,7 +98,7 @@ class WolframClient:
                 for i in range(len(sufixRoots)):
                     root = sympify(sufixRoots[i])
                     fResult = root.evalf()
-                    if root != fResult:
+                    if isinstance(fResult, (Float, Integer)) and root != fResult:
                         sResult = f"{fResult:.10f}".rstrip('0').rstrip('.') if "." in f"{fResult:.10f}" else f"{fResult:.10f}"
                         aproxRoots.append(prefixRoots[i] + sResult)           
             except SympifyError as e:
