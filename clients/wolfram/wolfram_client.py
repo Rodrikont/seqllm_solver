@@ -95,11 +95,25 @@ class WolframClient:
             
             try:
                 for i in range(len(sufixRoots)):
+                    # Выполняем упрощение и затем округление, если это возможно
                     root = sympify(sufixRoots[i])
                     fResult = root.evalf()
-                    if isinstance(fResult, (Float, Integer)) and root != fResult:
+                    if isinstance(fResult, (Float, Integer)):
+                        # Преобразование в текст и удаление лишних нулей в дробной части
                         sResult = f"{fResult:.10f}".rstrip('0').rstrip('.') if "." in f"{fResult:.10f}" else f"{fResult:.10f}"
                         aproxRoots.append(prefixRoots[i] + sResult)           
+                # Если количество корней отличается, то очищаем корни с округлением
+                if len(aproxRoots) != len(roots):
+                    aproxRoots = []
+                # Если после округления результат не изменился, то очищаем корни с округлением
+                if len(aproxRoots) > 0:
+                    isDiff = False
+                    for i in range(len(roots)):
+                        if roots[i] != aproxRoots[i]:
+                            isDiff = True
+                            break
+                    if isDiff == False:
+                        aproxRoots = []
             except SympifyError as e:
                 print(f"Ошибка преобразования выражения: {e}")
                 answer = f"Ошибка преобразования выражения: {e}",
