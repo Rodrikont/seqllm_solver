@@ -1,6 +1,8 @@
 from fastapi import FastAPI, Depends
 from routes.equation_routes import router_e
 from config.config import config
+import uvicorn
+
 
 config.client_wolfram.init_token()
 
@@ -18,5 +20,4 @@ app.include_router(router_e)
 
 # Запуск приложения
 if __name__ == "__main__":
-    import uvicorn
     uvicorn.run(app, host=config.host, port=config.port)
