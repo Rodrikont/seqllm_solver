@@ -137,7 +137,7 @@ class WolframClient:
             for root in roots:
                 if "i" in root:
                     status=Status.NEGATIVE_DISCRIMINANT.value
-                    answer="Дискриминант отрицательный. Нет действительных корней."
+                    answer="Дискриминант отрицательный. Нет рациональных корней."
                     break
 
             return ClientEquationResponse(
